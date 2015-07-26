@@ -30,6 +30,7 @@
     "gulp-plumber": "^1.0.1",
     "gulp-watch": "^4.3.4",
     "mocha": "^2.2.5",
-    "nomnom": "^1.8.1"
+    "nomnom": "^1.8.1",
+    "tmp": "0.0.26"
   }
 }
