@@ -18,25 +18,30 @@ describe("TailFollow", () => {
     logGenerator = new LogFileGenerator()
   })
 
+  function dataAccumulationTest (done, customizeTail) {
+    let dataAccumulator = ""
+
+    logGenerator.on("created", (filePath) => {
+      tail = new TailFollow(filePath)
+      if (customizeTail) { customizeTail(tail) }
+      tail.on("data", (data) => {
+        assert(Buffer.isBuffer(data))
+        dataAccumulator += data.toString()
+      })
+    })
+
+    logGenerator.createLog(path.join(dir, "simple.txt"))
+    logGenerator.writeLog()
+    logGenerator.on("flushed", () => {
+      assert(dataAccumulator.match(/foo:bar\n/))
+      assert.strictEqual(dataAccumulator, logGenerator.data)
+      return done()
+    })
+  }
+
   describe("data event", () => {
     it("should get emitted with the data the log generated wrote", done => {
-      let dataAccumulator = ""
-
-      logGenerator.on("created", (filePath) => {
-        tail = new TailFollow(filePath)
-        tail.on("data", (data) => {
-          assert(Buffer.isBuffer(data))
-          dataAccumulator += data.toString()
-        })
-      })
-
-      logGenerator.createLog(path.join(dir, "simple.txt"))
-      logGenerator.writeLog()
-      logGenerator.on("flushed", () => {
-        assert(dataAccumulator.match(/foo:bar\n/))
-        assert.strictEqual(dataAccumulator, logGenerator.data)
-        return done()
-      })
+      dataAccumulationTest(done)
     })
   })
 
@@ -65,6 +70,14 @@ describe("TailFollow", () => {
 
       logGenerator.createLog(path.join(dir, "setencoding-test.txt"))
       logGenerator.writeLog()
+    })
+  })
+
+  describe("setTailChunkSize()", () => {
+    it("should continue to work with a small chunk size", done => {
+      dataAccumulationTest(done, tail => {
+        tail.setTailChunkSize(7)
+      })
     })
   })
 })
