@@ -21,7 +21,7 @@ describe("TailFollow", () => {
   describe("data event", () => {
     it("should get emitted with the data the log generated wrote", done => {
       let dataAccumulator = ""
-      
+
       logGenerator.on("created", (filePath) => {
         tail = new TailFollow(filePath)
         tail.on("data", (data) => {
@@ -48,6 +48,23 @@ describe("TailFollow", () => {
         assert(err)
         return done()
       })
+    })
+  })
+
+  describe("setEncoding()", () => {
+    it("should cause data to be emitted as strings", done => {
+      logGenerator.on("created", filePath => {
+        tail = new TailFollow(filePath, {encoding: "utf8"})
+        assert(tail.setEncoding)
+        tail.once("data", data => {
+          assert(typeof data === "string" || data instanceof String)
+          assert(data.match(/.+:.+/))
+          return done()
+        })
+      })
+
+      logGenerator.createLog(path.join(dir, "setencoding-test.txt"))
+      logGenerator.writeLog()
     })
   })
 })
