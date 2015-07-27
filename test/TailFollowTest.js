@@ -20,20 +20,23 @@ describe("TailFollow", () => {
 
   describe("data event", () => {
     it("should get emitted with the data the log generated wrote", done => {
+      let dataAccumulator = ""
+      
       logGenerator.on("created", (filePath) => {
-        let dataAccumulator = ""
         tail = new TailFollow(filePath)
-        tail.once("data", (data) => {
+        tail.on("data", (data) => {
           assert(Buffer.isBuffer(data))
           dataAccumulator += data.toString()
-          assert(dataAccumulator.match(/foo:bar\n/))
-          assert.strictEqual(dataAccumulator, logGenerator.data)
-          return done()
         })
       })
 
       logGenerator.createLog(path.join(dir, "simple.txt"))
       logGenerator.writeLog()
+      logGenerator.on("flushed", () => {
+        assert(dataAccumulator.match(/foo:bar\n/))
+        assert.strictEqual(dataAccumulator, logGenerator.data)
+        return done()
+      })
     })
   })
 
