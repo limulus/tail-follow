@@ -1,6 +1,7 @@
 import {EventEmitter} from "events"
 import fs from "fs"
 import crypto from "crypto"
+import assert from "assert"
 
 export default class LogFileGenerator extends EventEmitter {
   constructor () {
@@ -14,6 +15,7 @@ export default class LogFileGenerator extends EventEmitter {
 
   createLog (path) {
     this._writer = fs.createWriteStream(path)
+    this._currentPath = path
 
     this._writer.on("open", fd => {
       this._fd = fd
@@ -64,5 +66,12 @@ export default class LogFileGenerator extends EventEmitter {
 
   static generateId () {
     return crypto.randomBytes(8).toString("base64").replace(/=/, "")
+  }
+
+  renameFile (newPath) {
+    fs.rename(this._currentPath, newPath, err => {
+      assert.ifError(err)
+      this._currentPath = newPath
+    })
   }
 }

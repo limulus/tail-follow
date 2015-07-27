@@ -56,6 +56,27 @@ describe("TailFollow", () => {
     })
   })
 
+  describe("rename event", () => {
+    it("should be emitted when the underlying file is renamed", done => {
+      logGenerator.on("created", (filePath) => {
+        tail = new TailFollow(filePath)
+        tail.on("data", () => {})
+        tail.on("rename", (oldPath, newPath) => {
+          assert.strictEqual(oldPath, filePath)
+          assert.strictEqual(newPath, path.join(dir, "renamed-test-bar.txt"))
+          return done()
+        })
+      })
+
+      logGenerator.on("flushed", () => {
+        logGenerator.renameFile(path.join(dir, "renamed-test-bar.txt"))
+      })
+
+      logGenerator.createLog(path.join(dir, "renamed-test-foo.txt"))
+      logGenerator.writeLog()
+    })
+  })
+
   describe("setEncoding()", () => {
     it("should cause data to be emitted as strings", done => {
       logGenerator.on("created", filePath => {
