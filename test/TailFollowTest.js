@@ -47,4 +47,26 @@ describe("TailFollow", () => {
       })
     })
   })
+
+  describe("positionForBuffer", () => {
+    it("should return the position in the file for the given buffer", done => {
+      let expectedPos = 0
+
+      logGenerator.on("created", filePath => {
+        tail = new TailFollow(filePath)
+        tail.on("data", data => {
+          assert.strictEqual(tail.positionForBuffer(data), expectedPos)
+          expectedPos += data.length
+        })
+      })
+
+      logGenerator.createLog(path.join(dir, "pos-test.txt"))
+      logGenerator.writeLog()
+      logGenerator.on("flushed", () => {
+        tail.removeAllListeners()
+        assert(expectedPos > 40)
+        return done()
+      })
+    })
+  })
 })
