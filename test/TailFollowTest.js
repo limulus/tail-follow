@@ -35,4 +35,15 @@ describe("TailFollow", () => {
       logGenerator.writeLog()
     })
   })
+
+  describe("error event", () => {
+    it("should get emitted when the file does not exist", done => {
+      tail = new TailFollow(path.join(dir, "does-not-exist.txt"))
+      tail.on("data", () => {})
+      tail.on("error", err => {
+        assert(err)
+        return done()
+      })
+    })
+  })
 })
