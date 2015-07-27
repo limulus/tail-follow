@@ -27,9 +27,7 @@ export default class LogFileGenerator extends EventEmitter {
 
   _writeUntilFlushed () {
     if (this._numberOfLinesToWrite != 0) {
-      let id = crypto.randomBytes(8).toString("base64").replace(/=/, "")
-      this._ids.push(id)
-      this._writer.write(`${id}:foo:bar\n`, () => {
+      this._writer.write(this.generateLogLine(), () => {
         fs.fsync(this._fd, () => {
           this._numberOfLinesToWrite -= 1
           setTimeout(() => this._writeUntilFlushed(), 1)
@@ -43,5 +41,20 @@ export default class LogFileGenerator extends EventEmitter {
 
   get ids () {
     return this._ids.slice()
+  }
+
+  generateLogLine () {
+    const {id, line} = LogFileGenerator.generateLogLine()
+    this._ids.push(id)
+    return line
+  }
+
+  static generateLogLine () {
+    const id = LogFileGenerator.generateId()
+    return {id, line: `${id}:foo:bar\n`}
+  }
+
+  static generateId () {
+    return crypto.randomBytes(8).toString("base64").replace(/=/, "")
   }
 }

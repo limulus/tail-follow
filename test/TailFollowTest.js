@@ -19,15 +19,14 @@ describe("TailFollow", () => {
   })
 
   describe("data event", () => {
-    it("should be emitted whenever a new log entry is written", done => {
+    it("should get emitted with what looks like log data", done => {
       logGenerator.on("created", (filePath) => {
-        const entries = []
+        let dataAccumulator = ""
         tail = new TailFollow(filePath)
-        tail.on("data", (data) => {
-          entries.push(data)
-          if (entries.length === 5) {
-            return done()
-          }
+        tail.once("data", (data) => {
+          dataAccumulator += data.toString()
+          assert(dataAccumulator.match(/foo:bar\n/))
+          return done()
         })
       })
 
