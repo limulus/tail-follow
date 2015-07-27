@@ -44,14 +44,14 @@ export default class LogFileGenerator extends EventEmitter {
   }
 
   generateLogLine () {
-    const {id, line} = LogFileGenerator.generateLogLine()
+    const id = LogFileGenerator.generateId()
+    const line = LogFileGenerator.generateLogLineWithId(id)
     this._ids.push(id)
     return line
   }
 
-  static generateLogLine () {
-    const id = LogFileGenerator.generateId()
-    return {id, line: `${id}:foo:bar\n`}
+  static generateLogLineWithId (id) {
+    return `${id}:foo:bar\n`
   }
 
   static generateId () {
