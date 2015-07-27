@@ -35,7 +35,7 @@ export default class LogFileGenerator extends EventEmitter {
       })
     }
     else {
-      this.emit("flushed")
+      setTimeout(() => this.emit("flushed"), 10)
     }
   }
 
