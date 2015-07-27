@@ -24,6 +24,7 @@ describe("TailFollow", () => {
         let dataAccumulator = ""
         tail = new TailFollow(filePath)
         tail.once("data", (data) => {
+          assert(Buffer.isBuffer(data))
           dataAccumulator += data.toString()
           assert(dataAccumulator.match(/foo:bar\n/))
           assert.strictEqual(dataAccumulator, logGenerator.data)
