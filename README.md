@@ -33,7 +33,7 @@ Stops following the file and ends the stream.
 
 See the documentation for the `tailChunkSize` constructor option above.
 
-#### Method `setSurviveRotation`
+#### Method `setSurviveRotation(bool)`
 
 See the documentation for the `surviveRotation` constructor option above.
 
