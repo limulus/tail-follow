@@ -68,10 +68,11 @@ export default class LogFileGenerator extends EventEmitter {
     return crypto.randomBytes(8).toString("base64").replace(/=/, "")
   }
 
-  renameFile (newPath) {
+  renameFile (newPath, cb) {
     fs.rename(this._currentPath, newPath, err => {
       assert.ifError(err)
       this._currentPath = newPath
+      if (cb) return cb()
     })
   }
 }

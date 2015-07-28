@@ -75,6 +75,23 @@ describe("TailFollow", () => {
       logGenerator.createLog(path.join(dir, "renamed-test-foo.txt"))
       logGenerator.writeLog()
     })
+
+    it("should still provide paths on systems (FreeBSD) where fs.watch() do not tell us the new name", done => {
+      logGenerator.on("created", filePath => {
+        tail = new TailFollow(filePath, { _dontWatch: true })
+        tail.on("rename", (oldPath, newPath) => {
+          assert.strictEqual(oldPath, filePath)
+          assert.strictEqual(newPath, path.join(dir, "freebsd-bar.txt"))
+          return done()
+        })
+
+        logGenerator.renameFile(path.join(dir, "freebsd-bar.txt"), () => {
+          tail._handleWatchEvent("rename", null)
+        })
+      })
+
+      logGenerator.createLog(path.join(dir, "freebsd-foo.txt"))
+    })
   })
 
   describe("setEncoding()", () => {
