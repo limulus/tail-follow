@@ -20,6 +20,10 @@ The optional arguments object takes the same parameters as a Readable stream (`e
 
   - `tailChunkSize`: Sets the size in bytes of `Buffer` objects created when reading from the file. Too small of a value, you will spend too much CPU handling new chunks; too big of a value, and you will waste memory. The default is `16384`.
 
+#### Event: rename
+
+Emitted when the underlying file has been renamed. Currently, this is limited to moves within the same directory, or within sibling directories of the file.
+
 #### .setTailChunkSize(size)
 
 See the documentation for the `tailChunkSize` constructor option above.
