@@ -119,6 +119,37 @@ describe("TailFollow", () => {
     })
   })
 
+  describe("setSurviveRotation()", () => {
+    it("should cause the stream to read from a new rotated file", done => {
+      const logGenerator2 = new LogFileGenerator()
+      let dataAccumulator = ""
+
+      logGenerator.on("created", filePath => {
+        tail = new TailFollow(filePath, {surviveRotation: true})
+        tail.on("data", data => {
+          dataAccumulator += data.toString()
+        })
+        tail.on("end", () => {
+          const expectedData = logGenerator.data + logGenerator2.data
+          assert.strictEqual(dataAccumulator, expectedData)
+          return done()
+        })
+      })
+
+      logGenerator.createLog(path.join(dir, "rotating.log"))
+      logGenerator.writeLog()
+      logGenerator.on("flushed", () => {
+        logGenerator.renameFile(path.join(dir, "rotating-0.log"), () => {
+          logGenerator2.createLog(path.join(dir, "rotating.log"))
+          logGenerator2.writeLog()
+          logGenerator2.on("flushed", () => {
+            tail.unfollow()
+          })
+        })
+      })
+    })
+  })
+
   describe("unfollow()", () => {
     it("should end the stream", done => {
       logGenerator.on("created", filePath => {
