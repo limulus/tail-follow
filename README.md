@@ -24,6 +24,10 @@ The optional arguments object takes the same parameters as a Readable stream (`e
 
 Emitted when the underlying file has been renamed. Currently, this is limited to moves within the same directory, or within sibling directories of the file.
 
+#### Method `unfollow()`
+
+Stops following the file and ends the stream.
+
 #### Method `setTailChunkSize(size)`
 
 See the documentation for the `tailChunkSize` constructor option above.

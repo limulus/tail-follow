@@ -118,4 +118,23 @@ describe("TailFollow", () => {
       })
     })
   })
+
+  describe("unfollow()", () => {
+    it("should end the stream", done => {
+      logGenerator.on("created", filePath => {
+        tail = new TailFollow(filePath)
+        tail.on("data", () => {})
+        tail.on("end", () => {
+          return done()
+        })
+      })
+
+      logGenerator.on("flushed", () => {
+        tail.unfollow()
+      })
+      
+      logGenerator.createLog(path.join(dir, "unfollow.txt"))
+      logGenerator.writeLog()
+    })
+  })
 })
