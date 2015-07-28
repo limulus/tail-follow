@@ -1,6 +1,6 @@
 {
   "name": "tail-follow",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Stream a file as it is appended",
   "main": "dist/es5/index.js",
   "scripts": {
