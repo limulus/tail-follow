@@ -43,6 +43,23 @@ describe("TailFollow", () => {
     it("should get emitted with the data the log generated wrote", done => {
       dataAccumulationTest(done)
     })
+
+    it("should emit Buffer instances with correct .position when in objectMode", done => {
+      let dataAccumulator = new Buffer(0)
+      logGenerator.on("created", filePath => {
+        tail = new TailFollow(filePath, { objectMode: true })
+        tail.on("data", data => {
+          assert(Buffer.isBuffer(data))
+          assert.strictEqual(data.position, dataAccumulator.length)
+          dataAccumulator = Buffer.concat([dataAccumulator, data])
+        })
+        tail.on("end", () => done())
+      })
+
+      logGenerator.createLog(path.join(dir, "object-mode-test.txt"))
+      logGenerator.writeLog()
+      logGenerator.on("flushed", () => tail.unfollow())
+    })
   })
 
   describe("error event", () => {
@@ -163,7 +180,7 @@ describe("TailFollow", () => {
       logGenerator.on("flushed", () => {
         tail.unfollow()
       })
-      
+
       logGenerator.createLog(path.join(dir, "unfollow.txt"))
       logGenerator.writeLog()
     })
