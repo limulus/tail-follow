@@ -1,10 +1,16 @@
 # tail-follow
 
-Stream a file as it is appended
+Stream a file in real time as it is appended.
 
 ## Synopsis
 
 If you are familiar with UNIX's `tail -f`, you have a good idea what this module does. It provides a `Readable` stream interface to a file that emits new data appended to the file in real time. It can even do the equivalent of `tail -F`, to survive log rotation.
+
+There are a lot of tail modules on npm, but this one differentiates itself by:
+
+  - Being a `Readable` stream, so your `data` event listeners get `Buffer` objects instead of decoded strings split by lines.
+  - Providing an API for retrieving positional data about where in file a chunk of data was read from.
+  - Emitting a `rename` event when the underlying file is renamed or rotated.
 
 ## API
 
