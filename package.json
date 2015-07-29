@@ -1,7 +1,7 @@
 {
   "name": "tail-follow",
   "version": "1.1.1",
-  "description": "Stream a file as it is appended",
+  "description": "Stream a file in real time as it is appended",
   "main": "dist/es5/index.js",
   "scripts": {
     "test": "mocha --compilers js:babel/register",
