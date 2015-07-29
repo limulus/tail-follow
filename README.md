@@ -26,6 +26,7 @@ The optional arguments object takes the same parameters as a Readable stream (`e
 
   - `tailChunkSize`: Sets the size in bytes of `Buffer` objects created when reading from the file. Too small of a value, you will spend too much CPU handling new chunks; too big of a value, and you will waste memory. The default is `16384`.
   - `surviveRotation`: Set to `true` so that if the underlying file is renamed or deleted, data will continue to be read from a new file created at the same `path`. Think `tail -F`. The default is `false`.
+  - `objectMode`: Setting to `true` enables object mode like on any other Readable stream, but has a few side effects. It enables position tracking so that you may call `.positionForChunk()` to determine where in the file a chunk of data was read from. If you have enabled decoding (via the `encoding` option), note that this will also cause your data events to emit `String` instances (as opposed to string primitives).
 
 #### Event `rename`
 
@@ -34,6 +35,10 @@ Emitted when the underlying file has been renamed. Currently, this is limited to
 #### Method `unfollow()`
 
 Stops following the file and ends the stream.
+
+#### Method `positionForChunk(chunk)`
+
+Returns the number of bytes from the beginning of the file that the chunk starts at. This must be the same object that was emitted to your data event handler. The stream must also be in `objectMode`. (See the documentation for the `objectMode` constructor option.)
 
 #### Method `setTailChunkSize(size)`
 
