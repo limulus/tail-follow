@@ -15,7 +15,12 @@
   },
   "keywords": [
     "tail",
-    "follow"
+    "follow",
+    "log",
+    "rotation",
+    "position",
+    "readable",
+    "stream"
   ],
   "author": "Eric McCarthy <eric@limulus.net> (http://www.limulus.net/)",
   "license": "MIT",
