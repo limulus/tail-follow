@@ -39,6 +39,8 @@
     "tmp": "0.0.26"
   },
   "dependencies": {
+    "buffer-indexof": "0.0.2",
+    "buffer-split": "0.0.0",
     "fs-find": "^0.3.5"
   }
 }
