@@ -190,4 +190,29 @@ describe("TailFollow", () => {
       logGenerator.on("flushed", () => tail.unfollow())
     })
   })
+
+  describe("follow:false option", () => {
+    it("should cause the 'end' event to be emitted when end of file is reached", done => {
+      const file = path.join(dir, "follow-false-opt.txt")
+      logGenerator.createLog(file)
+      logGenerator.writeLog()
+      logGenerator.on("flushed", () => {
+        tail = new TailFollow(file, { follow: false })
+        tail.on("data", () => {})
+        tail.once("end", () => {
+          return done()
+        })
+      })
+    })
+
+    it("should stop watching the file when end is reached", done => {
+      logGenerator.on("created", (file) => {
+        tail = new TailFollow(file, { follow: false })
+        tail.on("data", () => {})
+      })
+      logGenerator.createLog(path.join(dir, "follow-false-opt.txt"))
+      logGenerator.writeLog()
+      logGenerator.on("flushed", () => done())
+    })
+  })
 })
