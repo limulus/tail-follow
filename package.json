@@ -5,8 +5,9 @@
   "main": "dist/es5/lib/TailFollow.js",
   "scripts": {
     "test": "mocha --compilers js:babel/register",
-    "preversion": "npm run compile && npm test",
-    "compile": "babel --source-maps inline --out-dir dist/es5/lib lib"
+    "preversion": "npm test",
+    "prepublish": "npm run compile",
+    "compile": "rimraf dist && babel --source-maps inline --out-dir dist/es5/lib lib"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,7 @@
   "devDependencies": {
     "babel": "^5.8.5",
     "mocha": "^2.2.5",
+    "rimraf": "^2.4.2",
     "tmp": "0.0.26"
   },
   "dependencies": {
