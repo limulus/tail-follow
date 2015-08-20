@@ -31,7 +31,7 @@ The optional arguments object takes the same parameters as a Readable stream (`e
 
 #### Event `rename`
 
-Emitted when the underlying file has been renamed. Currently, this is limited to moves within the same directory, or within sibling directories of the file.
+Emitted when the underlying file has been renamed. The first argument sent to the event handler is the old file path, the second is the new file path. Currently, this is limited to moves within the same directory, or within sibling directories of the file.
 
 #### Method `unfollow()`
 
