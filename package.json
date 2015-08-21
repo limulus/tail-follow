@@ -35,6 +35,7 @@
     "tmp": "0.0.26"
   },
   "dependencies": {
+    "debug": "^2.2.0",
     "fs-find": "^0.3.5"
   }
 }
