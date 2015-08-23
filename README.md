@@ -1,6 +1,6 @@
 # tail-follow
 
-Stream a file in real time as it is appended.
+Stream a file in real time as it grows.
 
 ## Synopsis
 
@@ -10,6 +10,7 @@ There are a lot of tail modules on npm, but this one differentiates itself by:
 
   - Being a `Readable` stream, so your `data` event listeners get `Buffer` objects instead of decoded strings split by lines.
   - Providing an API for retrieving positional data about where in file a chunk of data was read from.
+  - Having a knob for controlling how much data to try to read from the file at a time, since the default of 16KB is too small for rapidly growing files.
   - Emitting a `rename` event when the underlying file is renamed or rotated.
 
 ## API
@@ -53,6 +54,10 @@ See the documentation for the `surviveRotation` constructor option above.
 #### Method `setFileRenamePollingInterval(milliseconds)`
 
 See the documentation for the `fileRenamePollingInterval` constructor option above.
+
+### Debugging
+
+Run node with `DEBUG=tail-follow`.
 
 ## Contributing
 
