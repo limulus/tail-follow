@@ -57,23 +57,33 @@ describe("TailFollow", () => {
   })
 
   describe("rename event", () => {
-    it("should be emitted when the underlying file is renamed", done => {
+    let i = 0
+    function assertThatRenameEventIsFired (done, options) {
       logGenerator.on("created", (filePath) => {
-        tail = new TailFollow(filePath)
+        tail = new TailFollow(filePath, options)
         tail.on("data", () => {})
         tail.on("rename", (oldPath, newPath) => {
           assert.strictEqual(oldPath, filePath)
-          assert.strictEqual(newPath, path.join(dir, "renamed-test-bar.txt"))
+          assert.strictEqual(newPath, path.join(dir, `renamed-test-${i}-bar.txt`))
           return done()
         })
       })
 
       logGenerator.on("flushed", () => {
-        logGenerator.renameFile(path.join(dir, "renamed-test-bar.txt"))
+        logGenerator.renameFile(path.join(dir, `renamed-test-${i}-bar.txt`))
       })
 
-      logGenerator.createLog(path.join(dir, "renamed-test-foo.txt"))
+      ++i
+      logGenerator.createLog(path.join(dir, `renamed-test-${i}-foo.txt`))
       logGenerator.writeLog()
+    }
+
+    it("should be emitted when the underlying file is renamed", done => {
+      assertThatRenameEventIsFired(done)
+    })
+
+    it("should still work when polling is used to determine when a file is renamed", done => {
+      assertThatRenameEventIsFired(done, { fileRenamePollingInterval: 20 })
     })
 
     it("should still provide paths on systems (FreeBSD) where fs.watch() do not tell us the new name", done => {

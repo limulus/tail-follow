@@ -28,6 +28,7 @@ The optional arguments object takes the same parameters as a Readable stream (`e
   - `surviveRotation`: Set to `true` so that if the underlying file is renamed or deleted, data will continue to be read from a new file created at the same `path`. Think `tail -F`. The default is `false`.
   - `objectMode`: Setting to `true` enables object mode like on any other Readable stream, but has a few side effects. It enables position tracking so that you may call `.positionForChunk()` to determine where in the file a chunk of data was read from. If you have enabled decoding (via the `encoding` option), note that this will also cause your data events to emit `String` instances (as opposed to string primitives).
   - `follow`: Default `true`. Setting to `false` will cause the stream to close when it reaches the end of the file instead of continuing to follow it.
+  - `fileRenamePollingInterval`: Default is `null`. Setting this to a number will cause TailFollow to poll for file rename events every given number of milliseconds instead of relying on `fs.watch()` rename events. Try this if your tail sometimes stops after a rotation.
 
 #### Event `rename`
 
@@ -48,6 +49,10 @@ See the documentation for the `tailChunkSize` constructor option above.
 #### Method `setSurviveRotation(bool)`
 
 See the documentation for the `surviveRotation` constructor option above.
+
+#### Method `setFileRenamePollingInterval(milliseconds)`
+
+See the documentation for the `fileRenamePollingInterval` constructor option above.
 
 ## Contributing
 
