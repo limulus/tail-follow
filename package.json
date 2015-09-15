@@ -1,6 +1,6 @@
 {
   "name": "tail-follow",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "description": "Stream a file in real time as it grows",
   "main": "dist/es5/lib/TailFollow.js",
   "scripts": {
