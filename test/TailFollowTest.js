@@ -228,32 +228,26 @@ describe("TailFollow", () => {
   })
 
   describe("#2 Crash during file rotation", () => {
-    const fsOpenOrig = fs.open
-
-    beforeEach(function setupStubForOpen () {
-      fs.open = function open (path, mode, cb) {
-        const args = Array.from(arguments)
-        setTimeout(function () {fsOpenOrig.apply(fs, args)}, 20)
-      }
-    })
-
-    afterEach(function cleanUpStubForOpen () {
-      fs.open = fsOpenOrig
-    })
+    function fsOpenStub (path, mode, cb) {
+      const args = Array.from(arguments)
+      setTimeout(function () {fs.open.apply(fs, args)}, 20)
+    }
 
     it("should be fixed", done => {
       logGenerator.createLog(path.join(dir, "rotate-crash.log"))
-      logGenerator.writeLog()
       logGenerator.on("created", filePath => {
         tail = new TailFollow(filePath, {
           surviveRotation: true,
-          fileRenamePollingInterval: 2
+          fileRenamePollingInterval: 2,
+          _fsOpen: fsOpenStub
         })
+
+        tail.once("open", () => logGenerator.writeLog())
         tail.on("data", chunk => {})
         tail.once("rename", () => {
           setTimeout(() => done(), 50)
         })
-        tail.on("error", () => {})
+        tail.on("error", err => assert.ifError(err))
       })
       logGenerator.on("flushed", () => {
         logGenerator.renameFile(path.join(dir, "rotate-crash-1.log"))
