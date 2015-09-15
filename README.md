@@ -55,6 +55,10 @@ See the documentation for the `surviveRotation` constructor option above.
 
 See the documentation for the `fileRenamePollingInterval` constructor option above.
 
+#### Property `filePath`
+
+Convenience property to get the full path of the file that the instance is following.
+
 ### Debugging
 
 Run node with `DEBUG=tail-follow`.
